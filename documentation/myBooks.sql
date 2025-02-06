@@ -16,6 +16,7 @@ CREATE TABLE `Customers` (
 CREATE TABLE `Companies` (
   `Company_ID` INT auto_increment PRIMARY KEY,
   `Company_Name` VARCHAR(75) NOT NULL,
+  `Company_Code` VARCHAR(6) NOT NULL,
   `Street_Address`VARCHAR(150) NOT NULL,
   `City` VARCHAR(50) NOT NULL,
   `State` VARCHAR(50) NOT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE `Invoice_Items` (
   `Invoice_ID` INT,
   `Title` VARCHAR(100) NOT NULL,
   `Rate` DECIMAL(10, 2) NOT NULL,
-  `Quanity` DECIMAL(5,1) NOT NULL,
+  `Quantity` DECIMAL(5,1) NOT NULL,
   `Description` VARCHAR(500) NOT NULL,
   FOREIGN KEY (`Invoice_ID`) REFERENCES `Invoices`(`Invoice_ID`)
   ON DELETE CASCADE 
@@ -84,12 +85,12 @@ VALUES
 ('Charlie', 'Davis', '602 Cedar Ct', 'Oak Park', 'IL', '60302', 'charlie.d@email.com', '555-2222', 'hashedpassword5');
 
 -- Insert Test Data for Companies
-INSERT INTO Companies (Company_Name, Street_Address, City, State, Zip, Email, Phone_Num, Password)
+INSERT INTO Companies (Company_Name, Company_Code, Street_Address, City, State, Zip, Email, Phone_Num, Password)
 VALUES
-('Tech Innovations', '100 Tech Park', 'Chicago', 'IL', '60611', 'contact@techinnovations.com', '555-1122', 'companypassword1'),
-('Book World', '200 Book Rd', 'Springfield', 'IL', '62702', 'info@bookworld.com', '555-3344', 'companypassword2'),
-('Auto Dynamics', '300 Auto Ln', 'Peoria', 'IL', '61615', 'support@autodynamics.com', '555-5566', 'companypassword3'),
-('Future Vision', '600 Bright Ave', 'Evanston', 'IL', '60201', 'vision@futurevision.com', '555-1212', 'companypassword4');
+('Tech Innovations', 'x6saj4', '100 Tech Park', 'Chicago', 'IL', '60611', 'contact@techinnovations.com', '555-1122', 'companypassword1'),
+('Book World', 'dgsq8h','200 Book Rd', 'Springfield', 'IL', '62702', 'info@bookworld.com', '555-3344', 'companypassword2'),
+('Auto Dynamics', 'hw27vq', '300 Auto Ln', 'Peoria', 'IL', '61615', 'support@autodynamics.com', '555-5566', 'companypassword3'),
+('Future Vision', 'xva82m','600 Bright Ave', 'Evanston', 'IL', '60201', 'vision@futurevision.com', '555-1212', 'companypassword4');
 
 -- Insert Test Data for Invoices
 INSERT INTO Invoices (Company_ID, Customer_ID, Charge_Date, Due_Date, Invoice_Num)
@@ -121,7 +122,7 @@ SELECT
      AND Customer_ID = (SELECT Customer_ID FROM Customers WHERE First_Name = 'Tom' AND Last_Name = 'Brown'));
 
 -- Insert Test Data for Invoice Items
-INSERT INTO Invoice_Items (Invoice_ID, Title, Rate, Quanity, Description)
+INSERT INTO Invoice_Items (Invoice_ID, Title, Rate, Quantity, Description)
 SELECT 
     (SELECT Invoice_ID FROM Invoices WHERE Company_ID = (SELECT Company_ID FROM Companies WHERE Company_Name = 'Tech Innovations') 
     AND Customer_ID = (SELECT Customer_ID FROM Customers WHERE First_Name = 'John' AND Last_Name = 'Doe') AND Invoice_Num = 1),
@@ -166,9 +167,9 @@ VALUES
 ('Bob', 'Martinez', '707 Pine St', 'Rockford', 'IL', '61101', 'bob.m@email.com', '555-4444', 'hashedpassword7');
 
 -- Insert Additional Test Data for Companies
-INSERT INTO Companies (Company_Name, Street_Address, City, State, Zip, Email, Phone_Num, Password)
+INSERT INTO Companies (Company_Name, Company_Code, Street_Address, City, State, Zip, Email, Phone_Num, Password)
 VALUES
-('GreenTech Solutions', '400 Greenway Blvd', 'Oak Park', 'IL', '60301', 'contact@greentech.com', '555-7777', 'companypassword5');
+('GreenTech Solutions', 'dgs68n', '400 Greenway Blvd', 'Oak Park', 'IL', '60301', 'contact@greentech.com', '555-7777', 'companypassword5');
 
 -- Insert Additional Test Data for Invoices (Paid and Unpaid)
 INSERT INTO Invoices (Company_ID, Customer_ID, Charge_Date, Due_Date, Invoice_Num)
@@ -191,7 +192,7 @@ SELECT
      AND Customer_ID = (SELECT Customer_ID FROM Customers WHERE First_Name = 'John' AND Last_Name = 'Doe'));
 
 -- Insert Additional Test Data for Invoice Items
-INSERT INTO Invoice_Items (Invoice_ID, Title, Rate, Quanity, Description)
+INSERT INTO Invoice_Items (Invoice_ID, Title, Rate, Quantity, Description)
 SELECT 
     (SELECT Invoice_ID FROM Invoices WHERE Company_ID = (SELECT Company_ID FROM Companies WHERE Company_Name = 'Future Vision') 
     AND Customer_ID = (SELECT Customer_ID FROM Customers WHERE First_Name = 'Eve' AND Last_Name = 'Walker') AND Invoice_Num = 1),
@@ -231,17 +232,15 @@ SELECT
 
 
 
-
-
-
 /*
+
 
 -- Queries!
 
 -- Query to input new Company user into database
-INSERT INTO `Companies` (`Company_Name`, `Street_Address`, `City`, `State`, `Zip`, `Email`, `Phone_Num`, `Password`)
+INSERT INTO `Companies` (`Company_Name`, `Company_Name`, `Street_Address`, `City`, `State`, `Zip`, `Email`, `Phone_Num`, `Password`)
 VALUES
-('[Company Name]', '[Address]', '[City]', '[State]', '[Zip Code', '[Email]', '[Phone Number]', '[Hashed Password]');
+('[Company Name]', '[Company Code]','[Address]', '[City]', '[State]', '[Zip Code', '[Email]', '[Phone Number]', '[Hashed Password]');
 
 -- Query to input new Customers user into database
 INSERT INTO `Customers` (`First_Name`, , 'Last_Name', `Street_Address`, `City`, `State`, `Zip`, `Email`, `Phone_Num`, `Password`)
@@ -249,27 +248,25 @@ VALUES
 ('[First Name]', '[Last Name]', '[Address]', '[City]', '[State]', '[Zip Code', '[Email]', '[Phone Number]', '[Hashed Password]');
 
 -- Query to verify company login
-SELECT password FROM companies WHERE password=[hashed password]
+SELECT email FROM companies WHERE password=[hashed password]
 
 -- Query to verify customer login
-SELECT password FROM customers WHERE password=[hashed password]
+SELECT email FROM customers WHERE password=[hashed password]
 
 -- Query to provide customer names for companies
 SELECT first_name, last_name 
 FROM customers
 INNER JOIN relationships ON relationships.customer_id=customers.customer_id 
-WHERE relationships.company_id = 
-(SELECT Company_ID FROM companies WHERE company_name = '[company name]');
+WHERE relationships.company_id = [company_id];
 
 -- Query to provide company names for customers
-SELECT company_name
+SELECT company_name 
 FROM companies
 INNER JOIN relationships ON relationships.company_id=companies.company_id 
-WHERE relationships.customer_id = 
-(SELECT customer_ID FROM customers WHERE first_name = '[first name]' AND last_name = '[last name]');
+WHERE relationships.customer_id = [customer_id];
 
 -- Query to display company code for users to input
-SELECT company_id FROM companies WHERE company_name = '[company name]';
+SELECT company_code FROM companies WHERE company_id=[company id];
 
 -- Query to display company name so users can verify that is the company they intend to connect with
 SELECT company_name FROM companies WHERE company_id = [id];
@@ -277,127 +274,116 @@ SELECT company_name FROM companies WHERE company_id = [id];
 -- Query for customers to add new companies
 INSERT INTO `Relationships` (`Company_ID`, `Customer_ID`)
 SELECT 
-    (SELECT Company_ID FROM companies WHERE company_name = '[company name]'),
-    (SELECT Customer_ID FROM customers WHERE first_name = '[first name]' AND last_name = '[last name]');
+    (SELECT Company_ID FROM companies WHERE company_code = '[company code]'),
+    [customer_id];
 
--- Query to view paid invoices 
-SELECT invoices.invoice_num, invoices.charge_date, invoices.due_date, 
-       invoice_items.title, invoice_items.rate, invoice_items.quanity, 
-       invoice_items.description,
-       SUM(invoice_items.rate * invoice_items.quanity) AS total_cost
+-- Query to view all paid invoices between a particular company and customer(Display: Invoice Number, Date Charged, Total Charged, Date Paid) 
+SELECT invoices.invoice_num, invoices.charge_date, SUM(invoice_items.rate * invoice_items.quantity) AS total_cost,
+      payments.date_paid
 FROM invoices
 INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
 LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
-WHERE invoices.invoice_num = (SELECT invoice_num 
-FROM invoices 
-WHERE invoices.customer_id = (SELECT customer_id 
-FROM customers 
-WHERE first_name = '[First name]' AND last_name = '[Last Name]')
-LIMIT 1)
-GROUP BY invoices.invoice_num, invoices.charge_date, invoices.due_date, 
-invoice_items.title, invoice_items.rate, invoice_items.quanity, invoice_items.description;
+WHERE invoices.customer_id = [customer_id] AND invoices.company_id = [company_id]
+GROUP BY invoices.invoice_id, payments.payment_id, invoice_items.item_id
+HAVING (total_cost-sum((payments.amount))=0);
 
--- Part 1: Query to view items on unpaid invoices
-SELECT 
-    invoices.invoice_num, 
-    invoices.charge_date, 
-    invoices.due_date, 
-    SUM(invoice_items.rate * invoice_items.quanity) AS total_owed,
-    COALESCE(SUM(payments.amount), 0) AS total_paid,
-    SUM(invoice_items.rate * invoice_items.quanity) - COALESCE(SUM(payments.amount), 0) AS balance_due
+-- Query to view all unpaid invoices between a particular company and customer(Display: Invoice Number, Date Charged, Total Charged, Total Unpaid Balance, Date Due) 
+SELECT invoices.invoice_num, invoices.charge_date, SUM(invoice_items.rate * invoice_items.quantity) AS total_cost, 
+      ((SUM(invoice_items.rate * invoice_items.quantity))-(coalesce((payments.amount)))) AS balance_due, invoices.due_date
 FROM invoices
 INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
 LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
-WHERE invoices.customer_id = (
-    SELECT customer_id 
-    FROM customers 
-    WHERE first_name = 'Tom' AND last_name = 'Brown'
-)
-GROUP BY invoices.invoice_num, invoices.charge_date, invoices.due_date
-HAVING SUM(invoice_items.rate * invoice_items.quanity) > COALESCE(SUM(payments.amount), 0);
+WHERE invoices.customer_id = 4 AND invoices.company_id = 4
+GROUP BY invoices.invoice_id, payments.payment_id, invoice_items.item_id
+HAVING (total_cost-sum((payments.amount))>0);
 
--- Part 2: View total left to pay on each invoice
-SELECT invoices.invoice_num,
-       SUM(invoice_items.rate * invoice_items.quanity) AS total_owed,
-       COALESCE(SUM(payments.amount), 0) AS total_paid,
-       SUM(invoice_items.rate * invoice_items.quanity) - COALESCE(SUM(payments.amount), 0) AS balance_due
-FROM invoices
-INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
+-- Query to view unpaid invoices items from a particular invoice(Display: Invoice Number, Charge Title, Rate, Quantity, Total, Charge Description) 
+SELECT invoices.invoice_num, invoice_items.title, invoice_items.rate, invoice_items.quantity, 
+(invoice_items.rate * invoice_items.quantity) AS total,invoice_items.description
+FROM invoice_items
+INNER JOIN invoices ON invoices.invoice_id = invoice_items.invoice_id
 LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
-WHERE invoices.customer_id = 
-    (SELECT customer_id 
-     FROM customers 
-     WHERE first_name = '[First Name]' AND last_name = '[Last Name]')
-GROUP BY invoices.invoice_num
-HAVING SUM(invoice_items.rate * invoice_items.quanity) > COALESCE(SUM(payments.amount), 0);
+WHERE invoices.customer_id = [id] AND invoices.company_id = [id]
+GROUP BY invoices.invoice_id, invoice_items.item_id
+HAVING ((total-(sum(payments.amount)))>0);
 
--- Query for customer to delete an invoice
+-- Query to view paid invoices items from a particular invoice(Display: Invoice Number, Charge Title, Rate, Quantity, Total, Charge Description) 
+SELECT invoices.invoice_num, invoice_items.title, invoice_items.rate, invoice_items.quantity, 
+(invoice_items.rate * invoice_items.quantity) AS total,invoice_items.description
+FROM invoice_items
+INNER JOIN invoices ON invoices.invoice_id = invoice_items.invoice_id
+LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
+WHERE invoices.customer_id = [id] AND invoices.company_id = [id]
+GROUP BY invoices.invoice_id, invoice_items.item_id
+HAVING ((total-(sum(payments.amount)))=0);
+
+-- Query for company to delete an invoice item while editing(also used for update: delete original and add corrected)
 DELETE invoice_items
 FROM invoice_items
-INNER JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
-WHERE invoice_items.title = 'Computer Screen Repair'
-AND invoice_items.item_id IS NOT NULL
-AND invoice_items.item_id > 0;
+WHERE invoice_items.item_id=[id];
 
 -- Query to make payments
 INSERT INTO `Payments` (`Invoice_ID`, `Amount`, `Date_Paid`)
 SELECT (SELECT Invoice_ID FROM invoices 
 		INNER JOIN customers ON customers.customer_id=invoices.customer_id
-        WHERE invoices.Invoice_Num = 1 AND customers.first_name="Eve" AND customers.last_name="Walker"), 
-5.00, NOW();
+        WHERE invoices.Invoice_Num = [invoice num] AND customers.customer_id=[id], 
+		5.00, NOW();
 
 -- Query to display company email and phone number for customers in case there is an issue
-SELECT email, phone_num FROM companies WHERE company_name = '[company name]';
+SELECT email, phone_num FROM companies WHERE company_id = [id];
 
--- Query to display company unpaid stats 
+-- Query to display company unpaid stats(Displays: customer first name, customer last name, total unpaid, percent unpaid, number of late payments)
 SELECT customers.last_name, customers.first_name, 
-SUM(invoice_items.rate * invoice_items.quanity) AS gross_balance,
-(SUM(invoice_items.rate * invoice_items.quanity) - SUM(payments.amount)) AS total_owed,
-round((((SUM(invoice_items.rate * invoice_items.quanity) - SUM(payments.amount))  / (SUM(invoice_items.rate * invoice_items.quanity))) * 100), 2) AS percent_unpaid,
+SUM(invoice_items.rate * invoice_items.quantity) AS gross_balance,
+((SUM(invoice_items.rate * invoice_items.quantity)) - SUM(payments.amount)) AS total_owed,
+round((((SUM(invoice_items.rate * invoice_items.quantity) - SUM(payments.amount))  / (SUM(invoice_items.rate * invoice_items.quantity))) * 100), 2) AS percent_unpaid,
 COUNT(CASE WHEN payments.date_paid > invoices.due_date THEN 1 ELSE NULL END) AS late_payments
 FROM customers 
 INNER JOIN invoices ON invoices.customer_id = customers.customer_id
 INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
+INNER JOIN companies ON companies.company_id=invoices.company_id
 LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-WHERE customers.first_name = "[First name]" AND customers.last_name = "[Last name]"
-GROUP BY customers.last_name, customers.first_name;
+WHERE companies.company_id=1
+GROUP BY customers.customer_id, customers.first_name, customers.last_name;
 
--- Query to display company paid stats
-SELECT customers.last_name, customers.first_name, 
-SUM(payments.amount) AS amount_paid,
-round(( (SUM(payments.amount)  / (SELECT sum(payments.amount) from payments)) * 100), 2) AS percent_of_profit
-FROM customers 
+-- Query to display company paid stats(Displays: First name, last name, total paid, and percent contribution to profits)
+SELECT customers.first_name, customers.last_name, 
+SUM(payments.amount) AS amount_paid, ROUND( (SUM(payments.amount) / 
+(SELECT COALESCE(SUM(payments.amount), 0) FROM payments 
+INNER JOIN invoices ON payments.invoice_id = invoices.invoice_id
+WHERE invoices.company_id = [id])) * 100, 2) AS percent_of_profit
+FROM customers
 INNER JOIN invoices ON invoices.customer_id = customers.customer_id
-INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
+INNER JOIN companies ON companies.company_id = invoices.company_id
 LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-WHERE customers.first_name = "[First Name]" AND customers.last_name = "[Last name]" 
-AND YEAR(invoices.charge_date) = 2025 
-GROUP BY customers.last_name, customers.first_name;
+WHERE companies.company_id = [id] 
+GROUP BY customers.customer_id, customers.first_name, customers.last_name;
 
--- Query to display company unpaid stats by year
+-- Query to display company unpaid stats by year(displays: first name, last name, total unpaid, total charged, percent unpaid, number of late payments)
 SELECT customers.last_name, customers.first_name, 
-SUM(invoice_items.rate * invoice_items.quanity) AS gross_balance,
-(SUM(invoice_items.rate * invoice_items.quanity) - SUM(payments.amount)) AS total_owed,
-round((((SUM(invoice_items.rate * invoice_items.quanity) - SUM(payments.amount))  / (SUM(invoice_items.rate * invoice_items.quanity))) * 100), 2) AS percent_unpaid,
+SUM(invoice_items.rate * invoice_items.quantity) AS gross_balance,
+((SUM(invoice_items.rate * invoice_items.quantity)) - SUM(payments.amount)) AS total_owed,
+round((((SUM(invoice_items.rate * invoice_items.quantity) - SUM(payments.amount))  / (SUM(invoice_items.rate * invoice_items.quantity))) * 100), 2) AS percent_unpaid,
 COUNT(CASE WHEN payments.date_paid > invoices.due_date THEN 1 ELSE NULL END) AS late_payments
 FROM customers 
 INNER JOIN invoices ON invoices.customer_id = customers.customer_id
 INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
+INNER JOIN companies ON companies.company_id=invoices.company_id
 LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-WHERE customers.first_name = "[First name]" AND customers.last_name = "[Last Name]" 
-AND YEAR(invoices.charge_date) = [year] 
-GROUP BY customers.last_name, customers.first_name;
+WHERE companies.company_id=[id] AND YEAR(invoices.charge_date) = [year]
+GROUP BY customers.customer_id, customers.first_name, customers.last_name;
 
--- Query to display company paid stats by year
-SELECT customers.last_name, customers.first_name, 
-SUM(payments.amount) AS amount_paid,
-round(( (SUM(payments.amount)  / (SELECT sum(payments.amount) from payments)) * 100), 2) AS percent_of_profit
-FROM customers 
+-- Query to display company paid stats by year (Displays: First name, last name, total paid, and percent contribution to profits)
+SELECT customers.first_name, customers.last_name, 
+SUM(payments.amount) AS amount_paid, ROUND( (SUM(payments.amount) / 
+(SELECT COALESCE(SUM(payments.amount), 0) FROM payments 
+INNER JOIN invoices ON payments.invoice_id = invoices.invoice_id
+WHERE invoices.company_id = [id])) * 100, 2) AS percent_of_profit
+FROM customers
 INNER JOIN invoices ON invoices.customer_id = customers.customer_id
-INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
+INNER JOIN companies ON companies.company_id = invoices.company_id
 LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-WHERE customers.first_name = "[first name]" AND customers.last_name = "[last name]" 
-AND YEAR(invoices.charge_date) = [year]
-GROUP BY customers.last_name, customers.first_name;
+WHERE companies.company_id = [id] AND YEAR(invoices.charge_date) = 2025 
+GROUP BY customers.customer_id, customers.first_name, customers.last_name;
 
 */
