@@ -1,7 +1,6 @@
 <?php 
     include("global.php");
     include("header.php");
-
 ?>
     <nav>
     <body class="sb-nav-fixed">
@@ -107,27 +106,27 @@
                             <li class="breadcrumb-item active">Share Company Code: <?php echo $company_code ?></li>
                         </ol>
                         <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">View my Stats</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="tables.php">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Select Customer</div>
-                                    <form action="view_cust.php" method="POST">
-                                        <select name="customer" id="customer">
-                                        <div class="card bg-primary text-white mb-4">
+                                            <div class="col-xl-3 col-md-6">
+                                                <div class="card bg-primary text-white mb-4">
+                                                    <div class="card-body">View my Stats</div>
+                                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                                        <a class="small text-white stretched-link" href="tables.php">View Details</a>
+                                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">Select Customer</div>
+                        <div class="card-footer">
+                            <form action="view_cust.php" method="POST" id="customer">
+                                <div class="mb-3">
+                                    <select name="customer" id="customer" class="form-select">
                                         <?php
-                                        $sql = "SELECT customer_id, first_name, last_name 
-                                                FROM customers 
+                                        $sql = "SELECT customers.customer_id, customers.first_name, customers.last_name FROM customers 
                                                 INNER JOIN relationships ON relationships.customer_id = customers.customer_id 
                                                 INNER JOIN companies ON relationships.company_id = companies.company_id
-                                                WHERE companies.company_id = '$user_id'";
+                                                WHERE companies.company_id = $user_id;";
 
                                         $query = mysqli_query($connection, $sql);
                                         if (!$query) {
@@ -135,19 +134,20 @@
                                         }
 
                                         while ($row = mysqli_fetch_assoc($query)) {
-                                            $customer_id = $row['customer_id'];
-                                            $customer_name = $row['first_name'] . " " . $row['last_name'];
-                                            echo "<option value='$customer_id'>$customer_name</option>";
+                                            $my_customer_id = $row['customer_id'];
+                                            $first_name = $row['first_name'];
+                                            $last_name = $row['last_name'];
+                                            echo "<option value='$my_customer_id'>" . $first_name . " " . $last_name . "</option>";
                                         }
                                         ?>
-                                        </div>
-                                        </select>
-                                
-                                    </form>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                    </div>
+                                    </select>
                                 </div>
-                            </div>
+                                <button type="submit" class="btn btn-light w-100">Continue</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                         
                 </main>
 <?php 

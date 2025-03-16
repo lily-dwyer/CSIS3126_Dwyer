@@ -112,16 +112,17 @@
                                 </div>
                             </div>
                             <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Select Company</div>
-                                    <form action="view_comp.php" method="POST">
-                                        <select name="company" id="company">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">Select Company</div>
+                        <div class="card-footer">
+                            <form action="view_comp.php" method="POST" id="company-form">
+                                <div class="mb-3">
+                                    <select name="company" id="company" class="form-select">
                                         <?php
-                                        $sql = "SELECT company_id, company_name
-                                                FROM companies 
+                                        $sql = "SELECT companies.company_id, companies.company_name FROM companies 
                                                 INNER JOIN relationships ON relationships.company_id = companies.company_id 
                                                 INNER JOIN customers ON relationships.customer_id = customers.customer_id
-                                                WHERE customers.customer_id = '$user_id'";
+                                                WHERE customers.customer_id = $user_id;";
 
                                         $query = mysqli_query($connection, $sql);
                                         if (!$query) {
@@ -129,17 +130,19 @@
                                         }
 
                                         while ($row = mysqli_fetch_assoc($query)) {
-                                            $company_id = $row['company_id'];
+                                            $my_company_id = $row['company_id'];
                                             $company_name = $row['company_name'];
-                                            echo "<option value='$company_id'>$company_name</option>";
+                                            echo "<option value='$my_company_id'>$company_name</option>";
                                         }
                                         ?>
-                                        </select>
-                                    </form>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                    </div>
+                                    </select>
                                 </div>
-                            </div>
+                                <button type="submit" class="btn btn-light w-100">Continue</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                         
                 </main>
             

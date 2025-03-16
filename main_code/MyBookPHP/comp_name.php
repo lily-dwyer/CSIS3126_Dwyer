@@ -1,4 +1,5 @@
 <?php 
+    $G_NO_LOGIN=true;
     include("global.php");
     include("header.php");
    

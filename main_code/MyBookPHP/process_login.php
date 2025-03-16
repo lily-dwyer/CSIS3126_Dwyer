@@ -1,5 +1,5 @@
 <?php  
-
+$G_NO_LOGIN=true;
 include("global.php");
 
 $email = mysqli_real_escape_string($connection, $_POST["email"]);

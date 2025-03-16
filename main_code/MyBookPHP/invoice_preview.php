@@ -1,20 +1,11 @@
-<?php 
-    include("global.php");
-    include("header.php");
-
-    $my_customer_id = mysqli_real_escape_string($connection, $_POST["customer"]);
-    $sql="SELECT first_name, last_name FROM customers WHERE customer_id='$my_customer_id';";
-    $query=mysqli_query($connection,$sql);
-    $row=mysqli_fetch_assoc($query);
-    $first_name=$row['first_name'];
-    $last_name=$row['last_name'];
-
+<?php
+include("global.php");
+include("header.php");
 ?>
-
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3"><?php echo $company_name?></a>
+            <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -30,6 +21,7 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
@@ -42,11 +34,9 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link">
+                            <a class="nav-link" href="comp_dash.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                <?php
-                                    echo $first_name . " " . $last_name;
-                                ?>
+                                Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -98,7 +88,7 @@
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tables
+                                Preview Name Invoice #
                             </a>
                         </div>
                     </div>
@@ -110,48 +100,67 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4"><?php echo $first_name . " " . $last_name;?></h1>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div id="layoutSidenav_content">
-                                    <main>
-                                        <div class="container-fluid px-4">
-                                            <ol class="breadcrumb mb-4">
-                                                <li class="breadcrumb-item"><a href="comp_dash.php">Dashboard</a></li>
-                                                <li class="breadcrumb-item active"><?php echo $company_name; ?></li>
-                                            </ol>
-                                        </div>
-            
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">View Paid</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="view_paid.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                            <input type="submit" value="View" class="card bg-primary text-white mb-4">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">View Unpaid</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="view_unpaid.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                                <input type="submit" class="card bg-primary text-white mb-4" value="View">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Input Invoice</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="input_invoice.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                                <input type="submit" class="card bg-primary text-white mb-4" value="New">
-                                        </form>
-                                    </div>
-                                </div>
+                        <h1 class="mt-4">Preview Name Invoice #</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="comp_dash.php">Dashboard</a></li>
+                            <li class = "breadcrumb-item"><a href="viewCustomer.php">Name</a></li>
+                            <li class="breadcrumb-item"><a href="view_unpaid.php">Unpaid Invoices</a></li>
+                            <li class="breadcrumb-item"><a href="view_invoice_items.php">Invoice Items</a></li>
+                            <li class="breadcrumb-item active">Tables</li>
+                        </ol>
+                        <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Preview Invoice# <?php echo $invoice_num; ?>
                             </div>
+                        <div class="card-body">
+                            <?php
+                            $sql = "SELECT invoice_items.item_id, invoice_items.title, invoice_items.rate, invoice_items.quantity, invoice_items.description 
+                                FROM invoice_items INNER JOIN invoices 
+                                on invoices.invoice_id = invoice_items.invoice_id 
+                                WHERE invoices.invoice_num=$invoice_num;";
+                                $query = mysqli_query($connection, $sql);
+                                echo "<table border='1' width='80%' align='center' cellpadding='10'
+                                cellspacing='0'>";
+                                echo "<thead bgcolor='#007BFF' style='color: white; font weight: bold;'>";
+                                    echo"<tr>";
+                                        echo"<th>Title</th>";
+                                        echo"<th>Rate</th>";
+                                        echo"<th>Quantity</th>";
+                                        echo"<th>Description</th>";
+                                        echo"<th>Description</th>";
+                                        echo"<th>Description</th>";
+                                    echo"</tr>";
+                                    echo"</thead>";
+                                    echo"<tbody>";
+                                if(mysqli_num_rows($query) > 0){
+                                    while($row = mysqli_fetch_assoc($query)){
+                                        echo"<tr bgcolor='#f2f2f2'>";
+                                        echo "<td>" . $row['title'] . "</td>";
+                                        echo "<td>" . $row['rate'] . "</td>";
+                                        echo "<td>" . $row['quantity'] . "</td>";
+                                        echo "<td>" . $row['description'] . "</td>";
+                                        echo "<td><a href='edit.php?id=" . urlencode($row["item_id"]) . "'>Edit</a></td>";
+                                        echo "<td><a href='delete.php?id=" . urlencode($row["item_id"]) . "'>Delete</a></td>";
+                                        echo"</tr>";
+                                    }
+                                }
+                                else{
+                                    echo "<tr><td colspan='4'>No Items Available</td></tr>";
+                                }
+                                echo"</table>";
+                                ?>
+                            </div>
+                        </div>
+                        <form action="delete.php" method="POST">
+                            <div class="mt-4 mb-0">
+                                <input type=hidden name="all" value="true">
+                                <input type=hidden name="invoice_num" value=<?php echo $invoice_num ?> >
+                                <div class="d-grid"><input type="submit" class="btn btn-primary btn-block" value="DELETE ALL"></div>
+                            </div>
+                        </form>
+                    </div>
                 </main>
-            </main>
-<?php 
-    include("footer.php");
+<?php
+include("footer.php");
 ?>

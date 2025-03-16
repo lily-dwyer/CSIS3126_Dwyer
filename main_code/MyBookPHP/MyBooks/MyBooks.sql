@@ -1,4 +1,4 @@
-/*
+
 CREATE SCHEMA MyBooks;
 USE MyBooks;
 CREATE TABLE `Customers` (
@@ -11,24 +11,24 @@ CREATE TABLE `Customers` (
   `Zip` VARCHAR(6) NOT NULL,
   `Email` VARCHAR(150),
   `Phone_Num` VARCHAR(50) NOT NULL,
-  `Password` CHAR(60) NOT NULL
+  `Password` CHAR(255) NOT NULL
 );
 
 CREATE TABLE `Companies` (
   `Company_ID` INT auto_increment PRIMARY KEY,
   `Company_Name` VARCHAR(75) NOT NULL,
-  `Company_Code` VARCHAR(6) NOT NULL,
+  `Company_Code` VARCHAR(8) NOT NULL,
   `Street_Address`VARCHAR(150) NOT NULL,
   `City` VARCHAR(50) NOT NULL,
   `State` VARCHAR(50) NOT NULL,
   `Zip` VARCHAR(6) NOT NULL,
   `Email` VARCHAR(150),
   `Phone_Num` VARCHAR(50) NOT NULL,
-  `Password` CHAR(50) NOT NULL
+  `Password` CHAR(255) NOT NULL
 );
 
 CREATE TABLE `Invoices` (
-  `Invoice_ID` INT auto_increment PRIMARY KEY,
+  `Invoice_ID` INT auto_increment PRIMARY KEY NOT NULL,
   `Company_ID` INT,
   `Customer_ID` INT,
   `Charge_Date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +43,7 @@ CREATE TABLE `Invoices` (
 );
 
 CREATE TABLE `Invoice_Items` (
-  `Item_ID` INT auto_increment PRIMARY KEY,
+  `Item_ID` INT auto_increment PRIMARY KEY NOT NULL,
   `Invoice_ID` INT,
   `Title` VARCHAR(100) NOT NULL,
   `Rate` DECIMAL(10, 2) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `Invoice_Items` (
 );
 
 CREATE TABLE `Payments` (
-  `Payment_ID` INT auto_increment PRIMARY KEY,
+  `Payment_ID` INT auto_increment PRIMARY KEY NOT NULL,
   `Invoice_ID` INT,
   `Amount` DECIMAL(10,2) NOT NULL,
   `Date_Paid` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -65,7 +65,7 @@ CREATE TABLE `Payments` (
 );
 
 CREATE TABLE `Relationships` (
-  `Relation_ID` INT auto_increment PRIMARY KEY,
+  `Relation_ID` INT auto_increment PRIMARY KEY NOT NULL,
   `Company_ID` INT,
   `Customer_ID` INT,
   FOREIGN KEY (`Company_ID`) REFERENCES `Companies`(`Company_ID`) 
@@ -76,6 +76,7 @@ CREATE TABLE `Relationships` (
   ON UPDATE CASCADE
 ); 
 
+/*
 -- Insert Test Data for Customers
 INSERT INTO Customers (First_Name, Last_Name, Street_Address, City, State, Zip, Email, Phone_Num, Password)
 VALUES
@@ -229,6 +230,8 @@ UNION ALL
 SELECT 
     (SELECT Company_ID FROM Companies WHERE Company_Name = 'GreenTech Solutions'),
     (SELECT Customer_ID FROM Customers WHERE First_Name = 'Bob' AND Last_Name = 'Martinez');
+*/
+
 
 
 
