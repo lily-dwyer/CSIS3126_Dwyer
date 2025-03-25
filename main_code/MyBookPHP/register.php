@@ -68,11 +68,12 @@
                                                 <input type="submit" class="btn btn-primary btn-block" value="Continue">
                                             </div>
                                         </div>
+                                        <div class="card-footer text-center py-3">
+                                        <div class="small"><a href="login.php">Have an account? Go to login</a></div>
+                                        </div>
                                         </form>
                                     </div>
-                                    <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

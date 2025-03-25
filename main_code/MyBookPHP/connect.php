@@ -1,6 +1,13 @@
 <?php 
     include("global.php");
     include("header.php");
+
+    if (empty($_SESSION['customer_id'])) {
+        session_unset(); 
+        session_destroy(); 
+        header("Location: login.php"); 
+        exit();
+    }    
 ?>
     <body class="bg-primary">
         <div id="layoutAuthentication">

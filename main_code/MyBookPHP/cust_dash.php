@@ -1,9 +1,16 @@
 <?php 
     include("global.php");
     include("header.php");
+
+    if (empty($_SESSION['customer_id'])) {
+        session_unset(); 
+        session_destroy(); 
+        header("Location: login.php"); 
+        exit();
+    }  
 ?>
     <nav>
-    <body class="sb-nav-fixed">
+    <body>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
             <p class="navbar-brand ps-3">Welcome, <?php echo $first_name . " " . $last_name;?></p>
@@ -34,7 +41,7 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="cust_dash.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -93,7 +100,7 @@
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
+                        <div class="small">Logged in as: <?php echo $first_name . " " . $last_name; ?></div>
                     </div>
                 </nav>
             </div>
@@ -115,9 +122,9 @@
                     <div class="card bg-primary text-white mb-4">
                         <div class="card-body">Select Company</div>
                         <div class="card-footer">
-                            <form action="view_comp.php" method="POST" id="company-form">
+                            <form action="view_comp.php" method="POST" id="my_company_id">
                                 <div class="mb-3">
-                                    <select name="company" id="company" class="form-select">
+                                    <select name="my_company_id" id="my_company_id" class="form-select">
                                         <?php
                                         $sql = "SELECT companies.company_id, companies.company_name FROM companies 
                                                 INNER JOIN relationships ON relationships.company_id = companies.company_id 

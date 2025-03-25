@@ -2,7 +2,13 @@
     include("global.php");
     include("header.php");
 
-    $my_customer_id = mysqli_real_escape_string($connection, $_POST["customer"]);
+    if (empty($_SESSION['company_id'])) {
+        session_unset(); 
+        session_destroy(); 
+        header("Location: login.php"); 
+        exit();
+    }  
+    $my_customer_id = intval($_POST['my_customer_id'] ?? $_GET['my_customer_id']);
     $sql="SELECT first_name, last_name FROM customers WHERE customer_id='$my_customer_id';";
     $query=mysqli_query($connection,$sql);
     $row=mysqli_fetch_assoc($query);
@@ -11,7 +17,7 @@
 
 ?>
 
-    <body class="sb-nav-fixed">
+    <body>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3"><?php echo $company_name?></a>
@@ -103,55 +109,63 @@
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
+                        <div class="small">Logged in as: <?php echo $company_name; ?></div>
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4"><?php echo $first_name . " " . $last_name;?></h1>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div id="layoutSidenav_content">
-                                    <main>
-                                        <div class="container-fluid px-4">
-                                            <ol class="breadcrumb mb-4">
-                                                <li class="breadcrumb-item"><a href="comp_dash.php">Dashboard</a></li>
-                                                <li class="breadcrumb-item active"><?php echo $company_name; ?></li>
-                                            </ol>
-                                        </div>
-            
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">View Paid</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="view_paid.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                            <input type="submit" value="View" class="card bg-primary text-white mb-4">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">View Unpaid</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="view_unpaid.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                                <input type="submit" class="card bg-primary text-white mb-4" value="View">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Input Invoice</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <form action="input_invoice.php" method="POST">
-                                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                                                <input type="submit" class="card bg-primary text-white mb-4" value="New">
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                </main>
-            </main>
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4"><?php echo $first_name . " " . $last_name; ?></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a href="comp_dash.php">Dashboard</a></li>
+                <li class="breadcrumb-item active"><?php echo $cfirst_name . " " . $last_name; ?></li>
+            </ol>
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">View Paid</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <form action="comp_view_paid.php" method="POST">
+                                <input type="hidden" name="my_customer_id" value=<?php echo $my_customer_id; ?>>
+                                <input type="submit" value="View" class="btn btn-primary text-white">
+                                <i class="fas fa-angle-right"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">View Unpaid</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <form action="comp_view_unpaid.php" method="POST">
+                                <input type="hidden" name="my_customer_id" value=<?php echo $my_customer_id; ?>>
+                                <input type="submit" value="View" class="btn btn-primary text-white">
+                                <i class="fas fa-angle-right"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">New Invoice</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <form action="input_invoice.php" method="POST">
+                                <input type="hidden" name="my_customer_id" value=<?php echo $my_customer_id; ?>>
+                                <input type="submit" value="Input New" class="btn btn-primary text-white">
+                                <i class="fas fa-angle-right"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+                                
+                              
+             
 <?php 
-    include("footer.php");
+include("footer.php");
 ?>

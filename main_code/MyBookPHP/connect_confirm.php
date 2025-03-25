@@ -2,6 +2,13 @@
     include("global.php");
     include("header.php");
 
+    if (empty($_SESSION['customer_id'])) {
+        session_unset(); 
+        session_destroy(); 
+        header("Location: login.php"); 
+        exit();
+    }  
+    
     $company_code = mysqli_real_escape_string($connection, $_POST["company_code"]);
     $sql = "SELECT company_id, company_name FROM companies WHERE company_code='$company_code' LIMIT 1;";
     $query=mysqli_query($connection, $sql);

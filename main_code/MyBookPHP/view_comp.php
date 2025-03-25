@@ -1,18 +1,24 @@
-<?php 
-    include("global.php");
-    include("header.php");
-    if (empty($_SESSION['company_id'])) {
-        session_unset(); 
-        session_destroy(); 
-        header("Location: login.php"); 
-        exit();
-    }  
-?>
-    <nav>
+<?php
+include("global.php");
+include("header.php");
+
+if (empty($_SESSION['customer_id'])) {
+    session_unset(); 
+    session_destroy(); 
+    header("Location: login.php"); 
+    exit();
+}  
+
+$my_company_id = intval($_POST['my_company_id'] ?? $_GET['my_company_id']);
+$sql="SELECT company_name FROM companies WHERE company_id='$my_company_id';";
+$query=mysqli_query($connection,$sql);
+$row=mysqli_fetch_assoc($query);
+$company_name=$row['company_name'];
+?> 
     <body>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <p class="navbar-brand ps-3"><?php echo $company_name ?></p>
+            <a class="navbar-brand ps-3" href="cust_dash.html"><?php echo $first_name . " " . $last_name; ?></a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -99,63 +105,51 @@
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as: <?php echo $company_name; ?></div>
-
+                        <div class="small">Logged in as: <? echo $first_name . " " . $last_name; ?></div>
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Share Company Code: <?php echo $company_code ?></li>
-                        </ol>
-                        <div class="row">
-                                            <div class="col-xl-3 col-md-6">
-                                                <div class="card bg-primary text-white mb-4">
-                                                    <div class="card-body">View my Stats</div>
-                                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                                        <a class="small text-white stretched-link" href="stats.php">View Details</a>
-                                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-3 col-md-6">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4"><?php echo $company_name; ?></h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a href="cust_dash.php">Dashboard</a></li>
+                <li class="breadcrumb-item active"><?php echo $company_name; ?></li>
+            </ol>
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
                     <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">Select Customer</div>
-                        <div class="card-footer">
-                            <form action="view_cust.php" method="POST" id="my_customer_id">
-                                <div class="mb-3">
-                                    <select name="my_customer_id" id="my_customer_id" class="form-select">
-                                        <?php
-                                        $sql = "SELECT customers.customer_id, customers.first_name, customers.last_name FROM customers 
-                                                INNER JOIN relationships ON relationships.customer_id = customers.customer_id 
-                                                INNER JOIN companies ON relationships.company_id = companies.company_id
-                                                WHERE companies.company_id = $user_id;";
-
-                                        $query = mysqli_query($connection, $sql);
-                                        if (!$query) {
-                                            die("Query failed: " . mysqli_error($connection));
-                                        }
-
-                                        while ($row = mysqli_fetch_assoc($query)) {
-                                            $my_customer_id = $row['customer_id'];
-                                            $first_name = $row['first_name'];
-                                            $last_name = $row['last_name'];
-                                            echo "<option value='$my_customer_id'>" . $first_name . " " . $last_name . "</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-light w-100">Continue</button>
+                        <div class="card-body">View Paid</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <form action="cust_view_paid.php" method="POST">
+                                <input type="hidden" name="my_company_id" value="<?php echo $my_company_id; ?>">
+                                <input type="submit" value="View" class="btn btn-primary text-white">
+                                <i class="fas fa-angle-right"></i>
                             </form>
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">View Unpaid</div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <form action="cust_view_unpaid.php" method="POST">
+                                <input type="hidden" name="my_company_id" value="<?php echo $my_company_id; ?>">
+                                <input type="submit" value="View" class="btn btn-primary text-white">
+                                <i class="fas fa-angle-right"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
-                        
-                </main>
+                                
+                              
+             
 <?php 
-    include("footer.php");
+include("footer.php");
 ?>

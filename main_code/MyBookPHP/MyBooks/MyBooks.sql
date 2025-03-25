@@ -1,4 +1,4 @@
-
+/*
 CREATE SCHEMA MyBooks;
 USE MyBooks;
 CREATE TABLE `Customers` (
@@ -75,7 +75,7 @@ CREATE TABLE `Relationships` (
   ON DELETE CASCADE 
   ON UPDATE CASCADE
 ); 
-
+*/
 /*
 -- Insert Test Data for Customers
 INSERT INTO Customers (First_Name, Last_Name, Street_Address, City, State, Zip, Email, Phone_Num, Password)
@@ -233,7 +233,8 @@ SELECT
 */
 
 
-
+USE mybooks;
+SELECT count(invoices.invoice_id) FROM invoices WHERE customer_id=1 AND company_id=1;
 
 
 /*
