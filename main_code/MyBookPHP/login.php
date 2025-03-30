@@ -2,6 +2,9 @@
 $G_NO_LOGIN=true;
 include("global.php");
 include("header.php");
+if(isset($errormsg)){
+    $display = true;
+}
 ?>
     <body class="bg-primary">
         <div id="layoutAuthentication">
@@ -11,7 +14,17 @@ include("header.php");
                         <div class="row justify-content-center">
                             <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                                    <div class="card-header">
+                                        <h3 class="text-center font-weight-light my-4">
+                                            Login</h3>
+                                            <p style="color:Tomato;" class="text-center">
+                                            <?php
+                                                if($display==true){
+                                                    echo $errormsg;
+                                                }
+                                            ?>
+                                        </p>
+                                        </div>
                                     <div class="card-body">
                                         <form action="process_login.php" method="POST">
                                             <div class="form-floating mb-3">
@@ -23,7 +36,6 @@ include("header.php");
                                                 <label for="pass">Password</label>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="small" href="password.html">Forgot Password?</a>
                                                 <input class="btn btn-primary" type="submit" value="Login">
                                             </div>
                                         </form>

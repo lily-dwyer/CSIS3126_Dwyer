@@ -1,101 +1,41 @@
 <?php
 include('global.php');
 include('header.php');
+
+$year = 0;
+
+if (!empty($_GET['new_year'])) {
+    $year = intval($_GET['new_year']);
+}
+
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScript CDN Example</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<script>
+$(document).ready(function(){
+    $("#new_year").change(function(){
+        let new_year = $(this).val();
+        window.location.href = 'stats.php?new_year=' + new_year;
+    });
+});
+</script>
     <body>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Sidebar Toggle-->
             <a class="navbar-brand ps-3" href="comp_dash.php"><?php echo $company_name; ?></a>
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </form>
-            <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
-                    </ul>
+                    <a class="small" id="logout" href="login.php" role="button">Logout<i class="fas fa-user fa-fw"></i></a>
                 </li>
             </ul>
         </nav>
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="comp_dash.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                            <div class="sb-sidenav-menu-heading">Interface</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Layouts
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="layout-static.html">Static Navigation</a>
-                                    <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Pages
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="login.html">Login</a>
-                                            <a class="nav-link" href="register.html">Register</a>
-                                            <a class="nav-link" href="password.html">Forgot Password</a>
-                                        </nav>
-                                    </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Error
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="401.html">401 Page</a>
-                                            <a class="nav-link" href="404.html">404 Page</a>
-                                            <a class="nav-link" href="500.html">500 Page</a>
-                                        </nav>
-                                    </div>
-                                </nav>
-                            </div>
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="charts.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
-                            </a>
-                            <a class="nav-link" href="tables.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tables
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as: <?php echo $company_name; ?></div>
-                    </div>
-                </nav>
-            </div>
+        
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
@@ -111,18 +51,22 @@ include('header.php');
                             </div>
                             <div class="card-body">
                             <?php
+                    
                             $sql = "SELECT customers.last_name, customers.first_name, 
                                 SUM(invoice_items.rate * invoice_items.quantity) AS gross_balance,
-                                ((SUM(invoice_items.rate * invoice_items.quantity)) - SUM(payments.amount)) AS total_owed,
-                                round((((SUM(invoice_items.rate * invoice_items.quantity) - SUM(payments.amount))  / (SUM(invoice_items.rate * invoice_items.quantity))) * 100), 2) AS percent_unpaid,
+                                ((SUM(invoice_items.rate * invoice_items.quantity)) - COALESCE(SUM(payments.amount),0)) AS total_owed,
+                                round((((SUM(invoice_items.rate * invoice_items.quantity) - COALESCE(SUM(payments.amount),0)) / 
+                                (SUM(invoice_items.rate * invoice_items.quantity))) * 100), 2) AS percent_unpaid,
                                 COUNT(CASE WHEN payments.date_paid > invoices.due_date THEN 1 ELSE NULL END) AS late_payments
-                                FROM customers 
-                                INNER JOIN invoices ON invoices.customer_id = customers.customer_id
+                                FROM customers INNER JOIN invoices ON invoices.customer_id = customers.customer_id
                                 INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
-                                INNER JOIN companies ON companies.company_id=invoices.company_id
+                                INNER JOIN companies ON companies.company_id = invoices.company_id
                                 LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-                                WHERE companies.company_id=$user_id
-                                GROUP BY customers.customer_id, customers.first_name, customers.last_name;";
+                                WHERE companies.company_id = '$user_id'";
+                            if($year != 0){
+                                $sql .= " AND invoices.charge_date BETWEEN '$year-01-01' AND '$year-12-31'";
+                            }                            
+                            $sql .= "GROUP BY customers.customer_id, customers.first_name, customers.last_name;";
                                 $query = mysqli_query($connection, $sql);
                                 echo "<table border='1' width='80%' align='center' cellpadding='10'
                                 cellspacing='0'>";
@@ -164,17 +108,27 @@ include('header.php');
                             </div>
                         <div class="card-body">
                             <?php
-                            $sql = "SELECT customers.first_name, customers.last_name, COALESCE(SUM(payments.amount), 0) AS amount_paid,
-                                ROUND(SUM(invoice_items.rate * invoice_items.quantity), 2) AS customer_total,
+                            $sql = "SELECT 
+                                customers.first_name, 
+                                customers.last_name, 
+                                COALESCE(SUM(payments.amount), 0) AS amount_paid,
+                                SUM(invoice_items.rate * invoice_items.quantity) AS customer_total,
                                 (SELECT COALESCE(SUM(invoice_items.rate * invoice_items.quantity), 0) 
-                                    FROM invoice_items INNER JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
-                                    WHERE invoices.company_id = $user_id) AS company_total
-                                FROM customers INNER JOIN invoices ON invoices.customer_id = customers.customer_id
-                                INNER JOIN companies ON companies.company_id = invoices.company_id
-                                LEFT JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
-                                LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-                                WHERE companies.company_id = $user_id GROUP BY customers.customer_id, customers.first_name, customers.last_name;";
-                            $query = mysqli_query($connection, $sql);
+                                FROM invoice_items 
+                                INNER JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
+                                WHERE invoices.company_id = '$user_id') AS company_total
+                            FROM customers
+                            INNER JOIN invoices ON invoices.customer_id = customers.customer_id
+                            INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
+                            INNER JOIN companies ON companies.company_id = invoices.company_id
+                            LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
+                            WHERE companies.company_id = '$user_id'";
+                            if($year != 0){
+                                $sql .= "AND invoices.charge_date BETWEEN '$year-01-01' AND '$year-12-31' ";
+                            }
+                            
+                            $sql .= "GROUP BY customers.customer_id, customers.first_name, customers.last_name;";
+                                $query = mysqli_query($connection, $sql);
                             echo "<table border='1' width='80%' align='center' cellpadding='10'
                             cellspacing='0'>";
                             echo "<thead bgcolor='#007BFF' style='color: white; font weight: bold;'>";
@@ -206,7 +160,7 @@ include('header.php');
                                 echo"</table>";
                                 ?>
                         </div>
-                    </div>
+                
                                
                         <div class="card mb-4">
                             <div class="card-header">
@@ -214,13 +168,30 @@ include('header.php');
                                 Filter by Year
                             </div>
                             <div>
-                                <select name="year" id="year">
-                                    <option value="2025">2025</option>
+                                <!-- Can I make the selection that is running show up first? -->
+                                <select name="new_year" id="new_year">
+                                    <?php
+                                        $sql = "SELECT DISTINCT YEAR(charge_date) AS new_year FROM invoices;";
+                                        $query = mysqli_query($connection, $sql);
+                                        if (!$query) {
+                                            die("Query failed: " . mysqli_error($connection));
+                                        }
+                                        if ($year==0){
+                                            echo "<option value=0>All Time</option>";
+                                        }
+                                        while ($row = mysqli_fetch_assoc($query)) {
+                                            $new_year = $row['new_year'];
+                                            echo "<option value='$new_year'>$new_year</option>";
+                                        }
+                                        if($year!=0){
+                                            echo "<option value=0>All Time</option>";
+                                        }
+                                    ?>
                                 </select>
                             </div>
                         </div>
             
                 </main>
 <?php
-include("footer.php")
+include("footer.php");
 ?>

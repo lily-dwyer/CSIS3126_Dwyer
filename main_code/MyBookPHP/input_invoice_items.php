@@ -10,6 +10,10 @@ if (empty($_SESSION['company_id'])) {
 
 $my_customer_id = intval($_POST["my_customer_id"]);
 $due_date = mysqli_real_escape_string($connection, $_POST["due_date"]);
+if(empty($due_date)){
+    $errormsg = "Please enter valid due date";
+    include("input_invoice.php");
+}
 
 ?>
 <!DOCTYPE html>

@@ -18,7 +18,6 @@ if($pass == ""){
 }
 
 if($errormsg != ""){
-    echo $errormsg;
     include("login.php");
     die();
 }
@@ -52,8 +51,6 @@ if(mysqli_num_rows($query2)>0){
 
 
 $errormsg = $errormsg . 'Username or password incorrect';
-echo $errormsg;
 include("login.php");
 die();
-
 ?>

@@ -25,7 +25,6 @@ if ($role=="company"){
     $comp_name = mysqli_real_escape_string($connection, $_POST["comp_name"]);
     if (empty($comp_name)) {
         $errormsg = $errormsg . "Company Name is required <br>";
-        echo $errormsg;
         include("comp_name.php");
         die();
     }
@@ -47,7 +46,6 @@ else{
 }
 
 if($errormsg != ""){
-    echo $errormsg;
     include("register.php");
     die();
 }
@@ -69,7 +67,7 @@ if(mysqli_query($connection,$sql)){
     exit();
 }
 else{
-    die("Could not connect to database");
+    $errormsg = $errormsg . "Database error, please try again later.<br>";
 }
 ?>
 

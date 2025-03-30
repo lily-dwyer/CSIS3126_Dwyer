@@ -13,7 +13,7 @@
     $sql = "SELECT company_id, company_name FROM companies WHERE company_code='$company_code' LIMIT 1;";
     $query=mysqli_query($connection, $sql);
     if(mysqli_num_rows($query)==0){
-        echo "Invalid Company Code";
+        $errormsg= "Invalid Company Code";
         include("connect.php");
         die();
     }

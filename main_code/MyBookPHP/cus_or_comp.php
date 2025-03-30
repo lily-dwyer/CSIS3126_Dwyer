@@ -48,7 +48,6 @@ if($zip == ""){
 }
     
 if($errormsg != ""){
-    echo $errormsg;
     include("register.php");
     die();
 }

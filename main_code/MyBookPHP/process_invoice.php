@@ -27,7 +27,6 @@ foreach ($item_title as $count => $value) {
 }
 
 if($errormsg != ""){
-    echo $errormsg;
     include("input_invoice_items.php");
     die();
 }
@@ -65,7 +64,7 @@ foreach ($item_title as $count => $value) {
         echo "";
     }
     else{
-        echo "Could not connect to database";
+        $errormsg = $errormsg . "Database error. Please try again later.";
         include("input_invoice.php");
         die();
     }

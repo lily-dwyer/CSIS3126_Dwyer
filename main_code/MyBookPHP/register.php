@@ -2,6 +2,9 @@
     $G_NO_LOGIN=true;
     include("global.php");
     include("header.php");
+    if(isset($errormsg)){
+        $display = true;
+    }
 ?>
     <body class="bg-primary">
         <div id="layoutAuthentication">
@@ -13,6 +16,13 @@
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
                                     <div class="card-body">
+                                        <p style="color:Tomato;" class="text-center">
+                                            <?php
+                                                if($display==true){
+                                                    echo $errormsg;
+                                                }
+                                            ?>
+                                        </p>
                                         <form action="cus_or_comp.php" method="POST">
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
