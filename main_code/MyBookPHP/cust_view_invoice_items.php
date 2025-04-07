@@ -20,18 +20,7 @@ $company_name = $row['company_name'];
 $invoice_num = $row['invoice_num'];
 $my_company_id = $row['company_id'];
 ?>
-    <body >
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="cust_dash.php"><?php echo $first_name . " " . $last_name; ?></a>
-            <!-- Navbar-->
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="small" id="logout" href="login.php" role="button">Logout<i class="fas fa-user fa-fw"></i></a>
-                </li>
-            </ul>
-         
-        </nav>
+
                 <main>
                     <div class="container-fluid px-4">
                     <h1 class="mt-4">View Invoice Items</h1>

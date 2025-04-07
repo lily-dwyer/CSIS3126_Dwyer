@@ -1,5 +1,6 @@
 <?php
 include("global.php");
+include("header.php");
 
 if (empty($_SESSION['company_id'])) {
     session_unset(); 
@@ -31,11 +32,11 @@ $(document).ready(function(){
         let row = `
         <tr>
             <td>${count}</td>
-            <td><input type='text' name='item_title[]'></td>
-            <td><input type='number' step='0.01' name='rate[]'></td>
-            <td><input type='number' name='quantity[]'></td>
-            <td><input type='text' name='description[]'></td>
-            <td><button type='button' class='removeLine'>Remove Line</button></td>
+            <td><input type="text" name="item_title[]" class="form-control"></td>
+            <td><input type="number" step="0.01" name="rate[]" class="form-control"></td>
+            <td><input type="number" name="quantity[]" class="form-control"></td>
+            <td><input type="text" name="description[]" class="form-control"></td>
+            <td><button type="button" class="btn btn-danger removeLine">Remove</button></td>
         </tr>`;
         $("#itemTable tbody").append(row);
         update();
@@ -56,50 +57,68 @@ $(document).ready(function(){
     }   
 });
 </script>
-    <body class="bg-primary">
-        <div id="layoutAuthentication">
-            <div id="layoutAuthentication_content">
-                <main>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-7">
-                                <div class="card mb-4">
-                        <div class="card-header">
-                            <i class="fas fa-table me-1"></i>
-                            <h3 align="center">Input items on your invoice</h3>
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10"> 
+                            <div class="card mb-4 w-100"> 
+                                <div class="card-header">
+                                    <i class="fas fa-table me-1"></i>
+                                    <h3 class="text-center">Input items on your invoice</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form action="process_invoice.php" method="POST">
+                                        <input type="hidden" name="due_date" value="<?php echo $due_date; ?>">
+                                        <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
+                                        
+                                        <div class="table-responsive">
+                                            <table id="itemTable" class="table table-bordered w-100">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Item Title</th>
+                                                        <th>Rate</th>
+                                                        <th>Quantity</th>
+                                                        <th>Description</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr bgcolor='#f2f2f2'>
+                                                        <td>1</td>
+                                                        <td><input type="text" name="item_title[]" class="form-control"></td>
+                                                        <td><input type="number" step="0.01" name="rate[]" class="form-control"></td>
+                                                        <td><input type="number" name="quantity[]" class="form-control"></td>
+                                                        <td><input type="text" name="description[]" class="form-control"></td>
+                                                        <td><button type="button" class="btn btn-danger removeLine">Remove</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <button type="button" id="addLine" class="btn btn-success">Add Line</button>
+                                            <button type="submit" id="submit" class="btn btn-primary">Submit Invoice</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer text-center py-3">
+                                    <form action = "view_cust.php" method="POST">
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small">
+                                            <a href="view_cust.php?my_customer_id=<?php echo urlencode($my_customer_id); ?>">
+                                                Back
+                                            </a>
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
                             </div>
-                        <div class="card-body">
-                        <form action="process_invoice.php" method="POST">
-                            <input type="hidden" name="due_date" value="<?php echo $due_date; ?>">
-                            <input type="hidden" name="my_customer_id" value="<?php echo $my_customer_id; ?>">
-                            <table id="itemTable" border='1' width='80%' align='center' cellpadding='10' cellspacing='0'>
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Item Title</th>
-                                    <th>Rate</th>
-                                    <th>Quantity</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr bgcolor='#f2f2f2'>
-                                     <td>1</td>
-                                     <td><input type="text" name="item_title[]"></td>
-                                     <td><input type="number" step= "0.01" name="rate[]"></td>
-                                     <td><input type="number" name="quantity[]"></td>
-                                     <td><input type="text" name="description[]"></td>
-                                     <td><button type="button" class="removeLine"> Remove Line</button></td>
-                                </tr>
-                            </table>
-                            <button type="button" id="addLine">Add Line</button>
-                            <button type="submit" id="submit">Submit Invoice</button>
-                        </form>
-                        </div>
-                    </div>
-                </main>
-            </div>
+                        </div> 
+                    </div> 
+                </div> 
+            </main>
+
 <?php
 
 include('footer.php');

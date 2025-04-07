@@ -15,17 +15,7 @@ $query = mysqli_query($connection, $sql);
 $row = mysqli_fetch_assoc($query);
 $company_name = $row['company_name'];
 ?>
-<body >
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-         <!-- Not displaying for some reason: revisit-->
-        <p class='navbar-brand ps-3'><?php echo $first_name . " " . $last_name; ?></p>
-        <!-- Navbar-->
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="small" id="logout" href="login.php" role="button">Logout<i class="fas fa-user fa-fw"></i></a>
-                </li>
-        </ul>
-    </nav>
+
 
             <main>
                 <div class="container-fluid px-4">

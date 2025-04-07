@@ -17,36 +17,20 @@ $row = mysqli_fetch_assoc($query);
 $first_name = $row['first_name'];
 $last_name = $row['last_name'];
 ?>
-<!-- Table not displaying -->
-<body>
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <p class='navbar-brand ps-3'><?php echo $company_name; ?></p>
-    
-        <!-- Navbar-->
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="small" id="logout" href="login.php" role="button">Logout<i class="fas fa-user fa-fw"></i></a>
-                </li>
-            </ul>
-            </li>
-        </ul>
-    </nav>
-
-    
-            <main>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4">Paid Invoices</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active"><a href="comp_dash.php">Dashboard</a></li>
-                        <li class="breadcrumb-item active">
-                            <a href="view_cust.php?my_customer_id=<?php echo urlencode($my_customer_id); ?>">
-                                <?php echo htmlspecialchars($first_name . ' ' . $last_name); ?>
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active">Paid Invoices</li>
-                    </ol>
-                    <div class="card mb-4">
-                        <div class="card-body">
+<main>
+<div class="container-fluid px-4">
+<h1 class="mt-4">Paid Invoices</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active"><a href="comp_dash.php">Dashboard</a></li>
+        <li class="breadcrumb-item active">
+            <a href="view_cust.php?my_customer_id=<?php echo urlencode($my_customer_id); ?>">
+                <?php echo htmlspecialchars($first_name . ' ' . $last_name); ?>
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Paid Invoices</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">
                         <?php
                         $sql = "SELECT invoices.invoice_num, invoices.invoice_id, invoices.charge_date, ROUND(SUM(invoice_items.rate * invoice_items.quantity),2) 
                                 AS total_cost, payments.date_paid

@@ -25,16 +25,6 @@ $(document).ready(function(){
     });
 });
 </script>
-    <body>
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Sidebar Toggle-->
-            <a class="navbar-brand ps-3" href="comp_dash.php"><?php echo $company_name; ?></a>
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="small" id="logout" href="login.php" role="button">Logout<i class="fas fa-user fa-fw"></i></a>
-                </li>
-            </ul>
-        </nav>
         
             <div id="layoutSidenav_content">
                 <main>
@@ -51,18 +41,30 @@ $(document).ready(function(){
                             </div>
                             <div class="card-body">
                             <?php
-                    
-                            $sql = "SELECT customers.last_name, customers.first_name, 
-                                SUM(invoice_items.rate * invoice_items.quantity) AS gross_balance,
-                                ((SUM(invoice_items.rate * invoice_items.quantity)) - COALESCE(SUM(payments.amount),0)) AS total_owed,
-                                round((((SUM(invoice_items.rate * invoice_items.quantity) - COALESCE(SUM(payments.amount),0)) / 
-                                (SUM(invoice_items.rate * invoice_items.quantity))) * 100), 2) AS percent_unpaid,
-                                COUNT(CASE WHEN payments.date_paid > invoices.due_date THEN 1 ELSE NULL END) AS late_payments
-                                FROM customers INNER JOIN invoices ON invoices.customer_id = customers.customer_id
-                                INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
-                                INNER JOIN companies ON companies.company_id = invoices.company_id
-                                LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-                                WHERE companies.company_id = '$user_id'";
+                            $sql = "SELECT 
+                                customers.last_name, 
+                                customers.first_name, 
+                                ROUND(COALESCE(SUM(invoice_totals.invoice_total), 0),2) AS gross_balance,
+                                ROUND(COALESCE(SUM(invoice_totals.invoice_total), 0) - COALESCE(SUM(payment_totals.total_paid), 0),2) AS total_owed,
+                                COUNT(CASE 
+                                    WHEN payments.date_paid > invoices.due_date THEN 1 
+                                    ELSE NULL 
+                                END) AS late_payments
+                            FROM customers
+                            INNER JOIN invoices ON invoices.customer_id = customers.customer_id
+                            INNER JOIN companies ON companies.company_id = invoices.company_id
+                            LEFT JOIN (
+                                SELECT invoice_id, SUM(rate * quantity) AS invoice_total
+                                FROM invoice_items
+                                GROUP BY invoice_id
+                            ) AS invoice_totals ON invoice_totals.invoice_id = invoices.invoice_id
+                            LEFT JOIN (
+                                SELECT invoice_id, SUM(amount) AS total_paid
+                                FROM payments
+                                GROUP BY invoice_id
+                            ) AS payment_totals ON payment_totals.invoice_id = invoices.invoice_id
+                            LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
+                            WHERE companies.company_id = '$user_id'";
                             if($year != 0){
                                 $sql .= " AND invoices.charge_date BETWEEN '$year-01-01' AND '$year-12-31'";
                             }                            
@@ -86,9 +88,12 @@ $(document).ready(function(){
                                         echo"<tr bgcolor='#f2f2f2'>";
                                         echo "<td>" . $row['first_name'] . "</td>";
                                         echo "<td>" . $row['last_name'] . "</td>";
-                                        echo "<td>" . $row['gross_balance'] . "</td>";
-                                        echo "<td>" . $row['total_owed'] . "</td>";
-                                        echo "<td>" . $row['percent_unpaid'] . "</td>";
+                                        $gross_balance = $row['gross_balance'];
+                                        $total_owed = $row['total_owed'];
+                                        echo "<td>" . $gross_balance . "</td>";
+                                        echo "<td>" . $total_owed . "</td>";
+                                        $percent_unpaid = ROUND(($total_owed/$gross_balance) * 100,2);
+                                        echo "<td>" . $percent_unpaid . "</td>";
                                         echo "<td>" . $row['late_payments'] . "</td>";
                                         echo"</tr>";
                                     }
@@ -108,25 +113,41 @@ $(document).ready(function(){
                             </div>
                         <div class="card-body">
                             <?php
-                            $sql = "SELECT 
-                                customers.first_name, 
-                                customers.last_name, 
-                                COALESCE(SUM(payments.amount), 0) AS amount_paid,
-                                SUM(invoice_items.rate * invoice_items.quantity) AS customer_total,
-                                (SELECT COALESCE(SUM(invoice_items.rate * invoice_items.quantity), 0) 
-                                FROM invoice_items 
-                                INNER JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
-                                WHERE invoices.company_id = '$user_id') AS company_total
-                            FROM customers
-                            INNER JOIN invoices ON invoices.customer_id = customers.customer_id
-                            INNER JOIN invoice_items ON invoice_items.invoice_id = invoices.invoice_id
-                            INNER JOIN companies ON companies.company_id = invoices.company_id
-                            LEFT JOIN payments ON payments.invoice_id = invoices.invoice_id
-                            WHERE companies.company_id = '$user_id'";
+                            $sql = "SELECT COALESCE(SUM(invoice_items.rate * invoice_items.quantity), 0) as company_total FROM invoice_items 
+                            INNER JOIN invoices on invoices.invoice_id=invoice_items.invoice_id 
+                            WHERE invoices.company_id='$user_id'";
                             if($year != 0){
                                 $sql .= "AND invoices.charge_date BETWEEN '$year-01-01' AND '$year-12-31' ";
                             }
                             
+                            $sql .= "GROUP BY invoices.company_id;";
+                            $query = mysqli_query($connection, $sql);
+                            $row = mysqli_fetch_assoc($query);
+                            $company_total = $row['company_total'];
+
+                            $sql = "SELECT 
+                                customers.first_name, 
+                                customers.last_name,
+                                COALESCE(SUM(payment_totals.total_paid), 0) AS amount_paid,
+                                COALESCE(SUM(invoice_totals.invoice_total), 0) AS customer_total
+                            FROM customers
+                            INNER JOIN invoices ON invoices.customer_id = customers.customer_id
+                            INNER JOIN companies ON companies.company_id = invoices.company_id
+                            LEFT JOIN (
+                                SELECT invoice_id, SUM(amount) AS total_paid
+                                FROM payments
+                                GROUP BY invoice_id
+                            ) AS payment_totals ON payment_totals.invoice_id = invoices.invoice_id
+                            LEFT JOIN (
+                                SELECT invoice_id, SUM(rate * quantity) AS invoice_total
+                                FROM invoice_items
+                                GROUP BY invoice_id
+                            ) AS invoice_totals ON invoice_totals.invoice_id = invoices.invoice_id
+                            WHERE companies.company_id = '$user_id'";
+                            if($year != 0){
+                                $sql .= "AND invoices.charge_date BETWEEN '$year-01-01' AND '$year-12-31' ";
+                            }
+                    
                             $sql .= "GROUP BY customers.customer_id, customers.first_name, customers.last_name;";
                                 $query = mysqli_query($connection, $sql);
                             echo "<table border='1' width='80%' align='center' cellpadding='10'
@@ -147,8 +168,7 @@ $(document).ready(function(){
                                         echo "<td>" . $row['last_name'] . "</td>";
                                         echo "<td>" . $row['amount_paid'] . "</td>";
                                         $customer_total = $row['customer_total'];
-                                        $company_total = $row['company_total'];
-                                        $percent = ($customer_total/$company_total) * 100;
+                                        $percent = ROUND(($customer_total/$company_total) * 100,2);
                                         echo "<td>" . $percent . "</td>";
                                         echo"</tr>";
                                     }
