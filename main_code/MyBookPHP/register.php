@@ -71,7 +71,7 @@
                                                 <label for="state">State</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="zip" type="text" name="zip" />
+                                                <input class="form-control" id="zip" type="number" name="zip" minlength=5 maxlength=5/>
                                                 <label for="zip">Zip Code</label>
                                             </div>
                                             <div class="mt-4 mb-0">

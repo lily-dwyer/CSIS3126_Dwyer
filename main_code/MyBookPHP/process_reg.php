@@ -1,73 +1,46 @@
 <?php 
 $G_NO_LOGIN=true;
 include("global.php");
-function generate($connection){
-    do{
-    $company_code= rand(1000000, 9999999);
-    $sql="SELECT company_id FROM companies WHERE company_code='$company_code';";
-    $query=(mysqli_query($connection, $sql));
-    }while(mysqli_num_rows($query)>0);
-    
-    return $company_code;
-}
-$role = mysqli_real_escape_string($connection, $_POST["role"]);
-$email = mysqli_real_escape_string($connection, $_POST["email"]);
-$phone = mysqli_real_escape_string($connection, $_POST["phone"]);
-$pass = password_hash($_POST["pass"], PASSWORD_DEFAULT);
-$address = mysqli_real_escape_string($connection, $_POST["address"]);
-$city = mysqli_real_escape_string($connection, $_POST["city"]);
-$state = mysqli_real_escape_string($connection,$_POST["state"]);
-$zip = mysqli_real_escape_string($connection, $_POST["zip"]);
+require_once("register_manager.php");
+
+$rm = new register_manager((mysqli_real_escape_string($connection, $_POST["role"])), (mysqli_real_escape_string($connection, $_POST["email"])),
+(mysqli_real_escape_string($connection, $_POST["phone"])), (password_hash($_POST["pass"], PASSWORD_DEFAULT)),
+(mysqli_real_escape_string($connection, $_POST["address"])), (mysqli_real_escape_string($connection, $_POST["city"])), 
+(mysqli_real_escape_string($connection,$_POST["state"])),(intval($_POST["zip"])));
 
 $errormsg = "";
 
-if ($role=="company"){
-    $comp_name = mysqli_real_escape_string($connection, $_POST["comp_name"]);
-    if (empty($comp_name)) {
-        $errormsg = $errormsg . "Company Name is required <br>";
-        include("comp_name.php");
-        die();
-    }
-    $sql="SELECT company_id, email FROM companies WHERE email='$email';";   
-    $check_email = mysqli_query($connection, $sql);
-    if (mysqli_num_rows($check_email) > 0) {
-        $errormsg = $errormsg . "This email is already in use <br>";
-    }
-}
+$sql="SELECT company_id FROM companies WHERE email='" . $rm->email . "';";   
+$check_email = mysqli_query($connection, $sql);
+if (mysqli_num_rows($check_email) > 0){
+    $errormsg = $errormsg . "This email is already in use <br>";
+}  
 
+$sql2="SELECT customer_id, email FROM customers WHERE email='" . $rm->email . "';";   
+$check_email2 = mysqli_query($connection, $sql2);
+if(mysqli_num_rows($check_email2)>0){
+     $errormsg = $errormsg . "This email is already in use <br>";
+}
+    
+if ($rm->role=="company"){
+    $comp_name = $rm->get_comp_name($connection, $errormsg);
+}
 else{
-    $first_name = mysqli_real_escape_string($connection,$_POST["first_name"]);
-    $last_name = mysqli_real_escape_string($connection, $_POST["last_name"]);
-    $sql="SELECT customer_id, email FROM customers WHERE email='$email';";   
-    $check_email = mysqli_query($connection, $sql);
-    if(mysqli_num_rows($check_email)>0){
-        $errormsg = $errormsg . "This email is already in use <br>";
-    }
+    $cus = $rm->get_cus_name($connection);
+    $first_name = $cus["first_name"];
+    $last_name = $cus["last_name"];
 }
 
 if($errormsg != ""){
     include("register.php");
     die();
 }
-
-if($role=="company"){
-    $company_code = generate($connection);
-    $sql = "INSERT INTO Companies (Company_Name, Company_Code, Street_Address, 
-    City, State, Zip, Email, Phone_Num, Password)
-    VALUES ('$comp_name', '$company_code', '$address', '$city', '$state', '$zip', '$email', '$phone', '$pass');";
+if($rm->role=="company"){
+    $rm->insertion($connection, $comp_name, null, $errormsg);
 }
 else{
-    $sql = "INSERT INTO Customers (First_Name, Last_Name, Street_Address, 
-    City, State, Zip, Email, Phone_Num, Password) 
-    VALUES ('$first_name', '$last_name', '$address', '$city', '$state', '$zip', '$email', '$phone', '$pass');";
+    $rm->insertion($connection, $first_name, $last_name, $errormsg);
 }
 
-if(mysqli_query($connection,$sql)){
-    header("Location: confirm_reg.php");
-    exit();
-}
-else{
-    $errormsg = $errormsg . "Database error, please try again later.<br>";
-}
 ?>
 

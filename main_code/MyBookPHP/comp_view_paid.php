@@ -64,7 +64,7 @@ $last_name = $row['last_name'];
                                     }
                                 }
                                 else{
-                                    echo "<tr><td colspan='4'>No Stats Available</td></tr>";
+                                    echo "<tr><td colspan='4'>No Paid Invoices</td></tr>";
                                 }
                                 echo"</table>";
                             ?>

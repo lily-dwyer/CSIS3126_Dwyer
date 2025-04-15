@@ -34,18 +34,18 @@ $last_name = $row['last_name'];
     <div class="card mb-4">
         <div class="card-body">
                         <?php
-                        $sql = "SELECT invoices.invoice_num, invoices.invoice_id,
-                            invoices.charge_date, 
-                            ROUND(SUM(invoice_items.rate * invoice_items.quantity),2) AS total_cost, 
-                            ROUND((SUM(invoice_items.rate * invoice_items.quantity) - COALESCE(SUM(payments.amount), 0)), 2) AS balance_due, 
-                            invoices.due_date
-                            FROM invoices
-                            INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
-                            LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
-                            WHERE invoices.customer_id = '$my_customer_id'
-                            AND invoices.company_id = '$user_id'
-                            GROUP BY invoices.invoice_num, invoices.charge_date, invoices.due_date, invoices.invoice_id
-                            HAVING balance_due > 0;";
+                        $sql = "SELECT invoices.invoice_num, invoices.invoice_id,invoices.charge_date, 
+                        ROUND(SUM(invoice_items.rate * invoice_items.quantity), 2) AS total_cost,
+                        ROUND(SUM(invoice_items.rate * invoice_items.quantity) - COALESCE(p.total_paid, 0),2) AS balance_due,
+                        invoices.due_date FROM invoices
+                        INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
+                        LEFT JOIN ( SELECT invoice_id, SUM(amount) AS total_paid FROM payments
+                            GROUP BY invoice_id
+                        ) AS p ON invoices.invoice_id = p.invoice_id
+                        WHERE invoices.customer_id = '$my_customer_id'
+                        AND invoices.company_id = '$user_id'
+                        GROUP BY invoices.invoice_num,invoices.charge_date,invoices.due_date,invoices.invoice_id, p.total_paid
+                        HAVING balance_due > 0;";
                         $query = mysqli_query($connection, $sql);
                         echo "<table border='1' width='80%' align='center' cellpadding='10'cellspacing='0'>";
                         echo "<thead bgcolor='#007BFF' style='color: white; font weight: bold;'>";
@@ -74,7 +74,7 @@ $last_name = $row['last_name'];
                                     }
                                 }
                                 else{
-                                    echo "<tr><td colspan='4'>No Stats Available</td></tr>";
+                                    echo "<tr><td colspan='4'>No Unpaid Invoices</td></tr>";
                                 }
                                 echo"</table>";
                             ?>
