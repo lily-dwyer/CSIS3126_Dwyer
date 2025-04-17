@@ -1,12 +1,20 @@
 <?php 
+
 $G_NO_LOGIN=true;
 include("global.php");
 require_once("register_manager.php");
 
-$rm = new register_manager((mysqli_real_escape_string($connection, $_POST["role"])), (mysqli_real_escape_string($connection, $_POST["email"])),
-(mysqli_real_escape_string($connection, $_POST["phone"])), (password_hash($_POST["pass"], PASSWORD_DEFAULT)),
-(mysqli_real_escape_string($connection, $_POST["address"])), (mysqli_real_escape_string($connection, $_POST["city"])), 
-(mysqli_real_escape_string($connection,$_POST["state"])),(intval($_POST["zip"])));
+$rm = new register_manager(
+    mysqli_real_escape_string($connection, $_POST["role"]),
+    mysqli_real_escape_string($connection, $_POST["email"]),
+    mysqli_real_escape_string($connection, $_POST["phone"]),
+    mysqli_real_escape_string($connection, $_POST["pass"]),
+    mysqli_real_escape_string($connection, $_POST["address"]),
+    mysqli_real_escape_string($connection, $_POST["city"]),
+    mysqli_real_escape_string($connection, $_POST["state"]),
+    intval($_POST["zip"])
+);
+
 
 $errormsg = "";
 
@@ -23,12 +31,16 @@ if(mysqli_num_rows($check_email2)>0){
 }
     
 if ($rm->role=="company"){
-    $comp_name = $rm->get_comp_name($connection, $errormsg);
+    $comp_name = mysqli_real_escape_string($connection, $_POST["comp_name"]);
+    if($comp_name==''){
+        $errormsg = $errormsg . "Company Name is required <br>";
+        include("comp_name.php");
+        die();
+    }
 }
 else{
-    $cus = $rm->get_cus_name($connection);
-    $first_name = $cus["first_name"];
-    $last_name = $cus["last_name"];
+    $first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
 }
 
 if($errormsg != ""){
@@ -36,10 +48,20 @@ if($errormsg != ""){
     die();
 }
 if($rm->role=="company"){
-    $rm->insertion($connection, $comp_name, null, $errormsg);
+    if($rm->insertion($connection, $comp_name, null)){
+        header("Location: confirm_reg.php");
+        exit();
+    }else{
+        $errormsg = $errormsg . "Database error, please try again later.<br>";
+    }
 }
 else{
-    $rm->insertion($connection, $first_name, $last_name, $errormsg);
+    if($rm->insertion($connection, $first_name, $last_name)){
+        header("Location: confirm_reg.php");
+        exit();
+    }else{
+        $errormsg = $errormsg . "Database error, please try again later.<br>";
+    }
 }
 
 ?>

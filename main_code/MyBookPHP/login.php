@@ -1,9 +1,16 @@
 <?php
 $G_NO_LOGIN=true;
+if(isset($_SESSION['company_id']) or isset($_SESSION['customer_id'])){
+    session_unset();
+    session_destroy();
+}
 include("global.php");
 include("header.php");
 if(isset($errormsg)){
     $display = true;
+}
+else{
+    $display = false;
 }
 ?>
     <body class="bg-primary">

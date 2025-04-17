@@ -8,16 +8,13 @@ class payment_manager{
         $this->amount = $amount;
     }  
 
-    function pay($connection, $invoice_id, $amount){
-        $sql="INSERT INTO Payments (Invoice_ID, Amount, Date_Paid) VALUES ('$invoice_id', '$amount', NOW());";
+    function pay($connection){
+        $sql="INSERT INTO Payments (Invoice_ID, Amount, Date_Paid) VALUES ('$this->invoice_id', '$this->amount', NOW());";
         if(mysqli_query($connection, $sql)){
-            header("Location: comp_dash.php");
-            exit();
+            return true;
         }
         else{
-            echo "Could not connect to database";
-            include("payment.php");
-            die();
+            return false;
         }
     }
 }

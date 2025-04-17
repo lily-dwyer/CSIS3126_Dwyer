@@ -123,7 +123,7 @@ $(document).ready(function(){
                             $sql .= "GROUP BY invoices.company_id;";
                             $query = mysqli_query($connection, $sql);
                             $row = mysqli_fetch_assoc($query);
-                            $company_total = $row['company_total'];
+                            $company_total = $row ? $row['company_total'] : 0;
 
                             $sql = "SELECT 
                                 customers.first_name, 

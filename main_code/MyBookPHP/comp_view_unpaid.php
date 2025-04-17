@@ -67,7 +67,13 @@ $last_name = $row['last_name'];
                                         echo "<td>" . $row['charge_date'] . "</td>";
                                         echo "<td>" . $row['total_cost'] . "</td>";
                                         echo "<td>" . $row['balance_due'] . "</td>";
-                                        echo "<td>" . $row['due_date'] . "</td>";
+                                        $today = date('Y-m-d');
+                                        $due_date = date('Y-m-d', strtotime($row['due_date']));
+                                        if ($row['due_date'] < $today) { 
+                                            echo "<td style='color: red;'>" . $row['due_date'] . "</td>";
+                                        } else {
+                                            echo "<td>" . $row['due_date'] . "</td>";
+                                        }
                                         echo "<td><a href='comp_view_invoice_items.php?invoice_id=" . urlencode($row['invoice_id']) . "'>View Items</a></td>";
                                         echo "<td><a href='payment.php?invoice_id=" . urlencode($row['invoice_id']) . "'>Make Payment</a></td>";
                                         echo"</tr>";

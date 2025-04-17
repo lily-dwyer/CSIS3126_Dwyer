@@ -13,11 +13,29 @@ class register_manager{
         $this->role = $role;
         $this->email = $email;
         $this->phone = $phone;
-        $this->pass = $pass;
+        $this->pass = password_hash($pass, PASSWORD_DEFAULT);
         $this->address = $address;
         $this->city = $city;
         $this->state = $state;
         $this->zip = $zip;
+    }
+
+    function is_new($connection){
+        $sql = "SELECT customer_id FROM customers WHERE email='$this->email';";
+        $query=(mysqli_query($connection, $sql));
+        if(mysqli_num_rows($query)!=0){
+            return false;
+        }
+        else{
+            $sql = "SELECT company_id FROM companies WHERE email='$this->email';";
+            $query=(mysqli_query($connection, $sql));
+            if(mysqli_num_rows($query)!=0){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
     }
 
     function generate($connection){
@@ -30,43 +48,26 @@ class register_manager{
         return $company_code;
     }
 
-    function get_comp_name($connection, &$errormsg){
-        $comp_name = mysqli_real_escape_string($connection, $_POST["comp_name"]);
-        if (empty($comp_name)) {
-            $errormsg = $errormsg . "Company Name is required <br>";
-            include("comp_name.php");
-            die();
+
+    function insertion($connection, $name1, $name2){
+        if(($this->is_new($connection))==false){
+            return false;
         }
-        return $comp_name;
-    }
-
-    function get_cus_name($connection){
-        return [
-            "first_name" => mysqli_real_escape_string($connection, $_POST['first_name']),
-            "last_name" => mysqli_real_escape_string($connection, $_POST['last_name'])
-        ];
-    }    
-
-
-    function insertion($connection, $name1, $name2, &$errormsg){
         if($this->role=="company"){
             $company_code = $this->generate($connection);
-            $sql = "INSERT INTO Companies (Company_Name, Company_Code, Street_Address, 
-            City, State, Zip, Email, Phone_Num, Password)
+            $sql = "INSERT INTO Companies (Company_Name, Company_Code, Street_Address, City, State, Zip, Email, Phone_Num, Password)
             VALUES ('$name1', '$company_code', '$this->address', '$this->city', '$this->state', '$this->zip', '$this->email', '$this->phone', '$this->pass');";
         }
         else{
-            $sql = "INSERT INTO Customers (First_Name, Last_Name, Street_Address, 
-            City, State, Zip, Email, Phone_Num, Password) 
+            $sql = "INSERT INTO Customers (First_Name, Last_Name, Street_Address, City, State, Zip, Email, Phone_Num, Password) 
             VALUES ('$name1', '$name2', '$this->address', '$this->city', '$this->state', '$this->zip', '$this->email', '$this->phone', '$this->pass');";
         }
         
         if(mysqli_query($connection,$sql)){
-            header("Location: confirm_reg.php");
-            exit();
+            return true;
         }
         else{
-            $errormsg = $errormsg . "Database error, please try again later.<br>";
+            return false;
         }
     }
 }

@@ -25,7 +25,7 @@ if ($G_NO_LOGIN==true || !empty($_SESSION['customer_id'])) {
             echo "<!-- Navbar Brand-->";
             echo "<a class='navbar-brand ps-3'>" . $first_name . " " . $last_name . "</a>";
             echo "<!-- Navbar-->";
-            echo "<ul class='navbar-nav ms-auto ms-md-0 me-3 me-lg-4'>";
+            echo "<ul class='navbar-nav ms-auto me-5'>"; 
                 echo"<li class='nav-item dropdown'>";
                     echo "<a class='small' id='logout' href='logout.php' role='button'>Logout<i class='fas fa-user fa-fw'></i></a>";
                 echo"</li>";
@@ -46,7 +46,7 @@ if ($G_NO_LOGIN==true || !empty($_SESSION['company_id'])) {
             echo "<!-- Navbar Brand-->";
             echo "<a class='navbar-brand ps-3'>" . $company_name . "</a>";
             echo "<!-- Navbar-->";
-            echo "<ul class='navbar-nav ms-auto ms-md-0 me-3 me-lg-4'>";
+            echo "<ul class='navbar-nav ms-auto me-5'>"; 
                 echo"<li class='nav-item dropdown'>";
                     echo "<a class='small' id='logout' href='logout.php' role='button'>Logout<i class='fas fa-user fa-fw'></i></a>";
                 echo"</li>";
