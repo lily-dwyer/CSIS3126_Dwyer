@@ -13,6 +13,9 @@ $my_customer_id = intval($_POST["my_customer_id"]);
 if(isset($errormsg)){
     $display = true;
 }
+else{
+    $display = false;
+}
 ?>
     <body class="bg-primary">
         <div id="layoutAuthentication">

@@ -36,22 +36,25 @@ class invoice_manager{
     function add_items($connection, $invoice_id, $item_title, $rates, $quantities, $descs){
         foreach ($item_title as $index => $title) {
             $rate = $rates[$index];
+            echo $rate;
             if ($rate == null){
                 return false;
             }
             $quantity = $quantities[$index];
+            echo $quantity;
             if($quantity == null){
                 return false;
             }
             $description = $descs[$index];
+            echo $description;
             if($description==null){
                 return false;
             }
             $title = $title;
+            echo $title;
             if($title==null){
                 return false;
             }
-    
             $sql = "INSERT INTO Invoice_Items (Invoice_ID, Title, Rate, Quantity, Description) VALUES
                 ('$invoice_id', '$title', '$rate', '$quantity', '$description');";
     

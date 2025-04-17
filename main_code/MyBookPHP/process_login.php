@@ -26,25 +26,25 @@ if($errormsg != ""){
 }
 
 $x=$lm->login($connection);
-if($x[0] == 'Customer'){
-    $_SESSION['customer_id'] = $x[1];
-    $_SESSION['first_name'] = $x[2];
-    $_SESSION['last_name'] = $x[3];  
-    header("Location: cust_dash.php");
-    exit();  
-}elseif($x[0]=="Company"){
-    $_SESSION['company_id'] = $x[1]; 
-    $_SESSION['company_name'] = $x[2];
-    $_SESSION['company_code'] = $x[3];
-    header("Location: comp_dash.php");
-    exit();  
+if($x==true){
+    if($x[0] == 'Customer'){
+        $_SESSION['customer_id'] = $x[1];
+        $_SESSION['first_name'] = $x[2];
+        $_SESSION['last_name'] = $x[3];  
+        header("Location: cust_dash.php");
+        exit();  
+    }elseif($x[0]=="Company"){
+        $_SESSION['company_id'] = $x[1]; 
+        $_SESSION['company_name'] = $x[2];
+        $_SESSION['company_code'] = $x[3];
+        header("Location: comp_dash.php");
+        exit();  
+    }
 }else{
     $errormsg = $errormsg . 'Username or password incorrect';
     include("login.php");
     die();
-
 }
-    
 
 
 ?>

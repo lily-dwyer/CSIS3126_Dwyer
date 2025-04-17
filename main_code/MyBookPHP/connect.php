@@ -10,6 +10,8 @@
     }    
     if(isset($errormsg)){
         $display = true;
+    }else{
+        $display = false;
     }
 ?>
     <body class="bg-primary">
