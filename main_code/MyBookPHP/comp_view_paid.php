@@ -32,14 +32,23 @@ $last_name = $row['last_name'];
     <div class="card mb-4">
         <div class="card-body">
                         <?php
-                        $sql = "SELECT invoices.invoice_num, invoices.invoice_id, invoices.charge_date, ROUND(SUM(invoice_items.rate * invoice_items.quantity),2) 
-                                AS total_cost, payments.date_paid
-                                FROM invoices
-                                INNER JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
-                                LEFT JOIN payments ON invoices.invoice_id = payments.invoice_id
-                                WHERE invoices.customer_id = '$my_customer_id' AND invoices.company_id = '$user_id'
-                                GROUP BY invoices.invoice_id, payments.payment_id, invoice_items.item_id
-                                HAVING (total_cost - COALESCE(SUM(payments.amount), 0)) = 0;";
+                        $sql = "SELECT i.invoice_num, i.invoice_id, i.charge_date, 
+                            ROUND(SUM(ii.rate * ii.quantity), 2) AS total_cost,
+                            COALESCE(p.total_paid, 0) AS total_paid, p.latest_date_paid
+                            FROM invoices i
+                            INNER JOIN invoice_items ii ON i.invoice_id = ii.invoice_id
+                            LEFT JOIN (
+                                SELECT 
+                                    invoice_id, 
+                                    SUM(amount) AS total_paid, 
+                                    MAX(date_paid) AS latest_date_paid
+                                FROM payments
+                            GROUP BY invoice_id) 
+                            p ON i.invoice_id = p.invoice_id
+                            WHERE i.customer_id = $my_customer_id AND i.company_id = $user_id
+                            GROUP BY i.invoice_id, total_paid, p.latest_date_paid
+                            HAVING total_cost = total_paid;";
+            
                                 $query = mysqli_query($connection, $sql);
                                 echo "<table border='1' width='80%' align='center' cellpadding='10'
                                 cellspacing='0'>";
@@ -58,7 +67,7 @@ $last_name = $row['last_name'];
                                         echo "<td>" . $row['invoice_num'] . "</td>";
                                         echo "<td>" . $row['charge_date'] . "</td>";
                                         echo "<td>" . $row['total_cost'] . "</td>";
-                                        echo "<td>" . $row['date_paid'] . "</td>";
+                                        echo "<td>" . $row['latest_date_paid'] . "</td>";
                                         echo "<td><a href='comp_view_invoice_items.php?invoice_id=" . urlencode($row['invoice_id']) . "'>View Items</a></td>";
                                         echo"</tr>";
                                     }

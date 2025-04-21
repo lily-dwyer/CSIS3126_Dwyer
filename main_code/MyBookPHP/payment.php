@@ -11,13 +11,12 @@ if (empty($_SESSION['company_id'])) {
 
 $invoice_id = intval($_GET["invoice_id"]);
 
-$sql="SELECT SUM(invoice_items.quantity*invoice_items.rate) - COALESCE(SUM(payments.amount),0) as balance FROM invoice_items
-    LEFT JOIN payments on payments.invoice_id=invoice_items.invoice_id WHERE invoice_items.invoice_id=$invoice_id
-    GROUP BY invoice_items.invoice_id;";
+$sql="SELECT 
+  (SELECT SUM(quantity * rate) FROM invoice_items WHERE invoice_id = $invoice_id) - 
+  (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE invoice_id = $invoice_id) AS balance;";
 $query=mysqli_query($connection, $sql);
 $row=mysqli_fetch_assoc($query);
 $balance=$row['balance'];
-
 ?>
     <body class="bg-primary">
         <div id="layoutAuthentication">
